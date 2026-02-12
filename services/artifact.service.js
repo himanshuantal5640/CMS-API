@@ -1,30 +1,31 @@
-import cloudinary from "../config/cloudinary.js";
-import Artifact from "../models/artifact.js";
-import fs from 'fs';
+const Artifact = require("../models/artifact.js");
+const cloudinary = require("../config/cloudinary.js");
+const fs = require("fs");
 
-
-export const createArtifactService = async ({
+const createArtifactService = async ({
   title,
   content,
   userId,
-  filePath
+  filePath,
 }) => {
   if (!title || !content) {
     throw new Error("Title and content are required");
   }
-  let mediaUrl = null;
-  if(filePath){
-    const uploadResult = await cloudinary.uploader.upload(
-      filePath,
-      {
-        folder: "cms-artifacts"
-      }
-    )
-  };
-  mediaUrl = uploadResult.secure_url;
-  fs.unlinkSync(filePath);
-  console.log("media url before save",mediaUrl);
   
+  let mediaUrl = null;
+
+  if (filePath) {
+    const uploadResult = await cloudinary.uploader.upload(filePath, {
+      folder: "cms-artifacts"
+    });
+
+    mediaUrl = uploadResult.secure_url;
+
+ 
+    fs.unlinkSync(filePath);
+  }
+
+  console.log("MEDIA URL BEFORE SAVE:", mediaUrl);
 
   const artifact = await Artifact.create({
     title,
@@ -36,20 +37,14 @@ export const createArtifactService = async ({
   return artifact;
 };
 
-
-
-
-
-
-
-
-
-export const getArtifactsService = async ({ userId, role }) => {
+const getArtifactsService = async ({ userId, role }) => {
   if (role === "ADMIN") {
-    // Admin sees everything
+ 
     return await Artifact.find().populate("author", "name email role");
   }
 
-  // Non-admin sees only their own artifacts
+
   return await Artifact.find({ author: userId });
 };
+
+module.exports = { createArtifactService, getArtifactsService };

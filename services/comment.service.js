@@ -1,6 +1,6 @@
-import Comment from "../models/comment.js";
+const Comment = require("../models/comment.js");
 
-export const addCommentService = async ({
+const addCommentService = async ({
   artifactId,
   userId,
   text
@@ -16,8 +16,10 @@ export const addCommentService = async ({
   });
 };
 
-export const getCommentsService = async (artifactId) => {
+const getCommentsService = async (artifactId) => {
   return await Comment.find({ artifact: artifactId })
     .populate("user", "name")
     .sort({ createdAt: -1 });
 };
+
+module.exports = { addCommentService, getCommentsService };

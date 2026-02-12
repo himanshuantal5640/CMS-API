@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const likeSchema = new mongoose.Schema(
   {
@@ -16,7 +16,6 @@ const likeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-
 likeSchema.index({ artifact: 1, user: 1 }, { unique: true });
 
-export default mongoose.model("Like", likeSchema);
+module.exports = mongoose.model("Like", likeSchema);

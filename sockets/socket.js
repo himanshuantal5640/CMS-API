@@ -1,50 +1,67 @@
-import { Socket } from "socket.io";
-import { sendChatService } from "../services/chat.service";
+const { sendChatService } = require("../services/chat.service.js");
 
-export const registerSocketHandlers = (io) =>{
-    const onlineUsers = new Map();
-    io.on("connection",(socket)=>{
-        // User Online
-        console.log("User connected: ",socket.id);
-        socket.on("user-online",(userId)=>{
-            onlineUsers.set(userId,socket.id);
-            console.log("Online Users: ",onlineUsers);
+const registerSocketHandlers = (io) => {
+
+
+  const onlineUsers = new Map();
+
+  io.on("connection", (socket) => {
+    console.log("User connected:", socket.id);
+
+  
+    socket.on("user-online", (userId) => {
+
+      onlineUsers.set(userId, socket.id);
+
+      console.log("Online Users:", onlineUsers);
+    });
+
+  
+    socket.on("send-message", async (data) => {
+
+      try {
+        const { senderId, receiverId, message } = data;
+
+        if (!senderId || !receiverId || !message) {
+          return;
+        }
+
+      
+        const chat = await sendChatService({
+          senderId,
+          receiverId,
+          message
         });
 
-        // Send msg
+        const receiverSocketId = onlineUsers.get(receiverId);
 
-        socket.on("send-message",async (data)=>{
-            try {
-                const {senderID,receiverId,messgae} = data;
-                if(!senderID || !receiverId || !message){
-                    return;
-                }
-                const chat = sendChatService({
-                    senderId,
-                    receiverId,
-                    message
-                });
-                //send if receiver is online
-                const receiverSocketId = onlineUsers.get(receiverId);
-                if(receiverSocketId){
-                    io.to(receiverSocketId).emit("receive-message",chat);
-                }
-                //also emit back to sender
-                socket.emit("message-sent",chat);
-            } catch (error) {
-                console.log("Socket Error: ",error.message);
-            }
-        });
-        // disconnect
-        socket.on("disconnect",()=>{
-            for(let [userId,sockId] of onlineUsers.entries()){
-                if(sockId === socket.id){
-                    onlineUsers.delete(userId);
-                    break;
-                }
-            }
-            console.log("User disconnected: ",socket.id);
-        });
+        if (receiverSocketId) {
+          io.to(receiverSocketId).emit("receive-message", chat);
+        }
+
+       
+        socket.emit("message-sent", chat);
+
+      } catch (error) {
+        console.log("Socket error:", error.message);
+      }
 
     });
+
+ 
+    socket.on("disconnect", () => {
+
+      for (let [userId, sockId] of onlineUsers.entries()) {
+        if (sockId === socket.id) {
+          onlineUsers.delete(userId);
+          break;
+        }
+      }
+
+      console.log("User disconnected:", socket.id);
+    });
+
+  });
 };
+
+module.exports = { registerSocketHandlers };

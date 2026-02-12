@@ -1,28 +1,25 @@
-import "dotenv/config";
-import dotenv from "dotenv";
-import http from 'http';
-import { Server } from "socket.io";
-dotenv.config();
+require("dotenv").config();
 
-import app from "./app.js";
-import connectDB from "./config/db.js";
-import cloudinary from "./config/cloudinary.js";
-import { registerSocketHandlers } from "./sockets/socket.js";
-cloudinary;
+const app = require("./app.js");
+const http = require("http");
+const connectDB = require("./config/db.js");
 
+const { Server } = require("socket.io");
+const { registerSocketHandlers } = require("./sockets/socket.js");
 
-
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 connectDB();
 
 const server = http.createServer(app);
-const io = new Server(server,{
-  cors:{
-    origin:"*",
-    credentials:true, // manage cookies
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    credentials: true
   }
 });
+
 
 registerSocketHandlers(io);
 

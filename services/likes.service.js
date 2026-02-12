@@ -1,6 +1,6 @@
-import Like from "../models/likes.js";
+const Like = require("../models/likes.js");
 
-export const toggleLikeService = async ({ artifactId, userId }) => {
+const toggleLikeService = async ({ artifactId, userId }) => {
   const existingLike = await Like.findOne({
     artifact: artifactId,
     user: userId
@@ -19,11 +19,9 @@ export const toggleLikeService = async ({ artifactId, userId }) => {
   return { liked: true };
 };
 
-
-
-
-
-export const getLikeCountService = async (artifactId) => {
+const getLikeCountService = async (artifactId) => {
   const count = await Like.countDocuments({ artifact: artifactId });
   return count;
 };
+
+module.exports = { toggleLikeService, getLikeCountService };

@@ -1,10 +1,10 @@
-import express from 'express';
-import { authMiddleware } from '../middlewares/auth.middleware.js';
-import { getChatsByThread, sendChat } from '../controllers/chats.controller.js';
+const express = require("express");
+const { getChatsByThread, sendChat } = require("../controllers/chats.controller.js");
+const { authMiddleware } = require("../middlewares/auth.middleware.js");
 
 const router = express.Router();
 
-router.get('/:threadId',authMiddleware,getChatsByThread);
-router.post('/',authMiddleware,sendChat);
+router.get("/:threadId", authMiddleware, getChatsByThread);
+router.post("/", authMiddleware, sendChat);
 
-export default router;
+module.exports = router;

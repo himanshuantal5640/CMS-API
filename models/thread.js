@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const threadSchema = new mongoose.Schema(
   {
@@ -9,15 +9,17 @@ const threadSchema = new mongoose.Schema(
         required: true
       }
     ],
+
     lastMessage: {
       type: String,
-      default:""
+      default: ""
     },
-    lastMessageAt:{
-        type:Date
+
+    lastMessageAt: {
+      type: Date
     }
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Thread", threadSchema);
+module.exports = mongoose.model("Thread", threadSchema);

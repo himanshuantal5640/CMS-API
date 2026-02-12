@@ -1,12 +1,12 @@
-import express from "express";
-import { createArtifact ,getArtifacts} from "../controllers/artifact.controller.js";
-import { authMiddleware} from "../middlewares/auth.middleware.js";
-import { authorizeRoles } from "../middlewares/role.middleware.js";
-import { upload } from "../middlewares/uploads.middleware.js";
+const express = require("express");
+const { createArtifact, getArtifacts } = require("../controllers/artifact.controller.js");
+const { authMiddleware } = require("../middlewares/auth.middleware.js");
+const { authorizeRoles } = require("../middlewares/role.middleware.js");
+const { upload } = require("../middlewares/uploads.middleware.js");
+const { apiLimiter } = require("../middlewares/rateLimiter.middleware.js");
 
 const router = express.Router();
+router.post("/", authMiddleware, upload.single("file"), createArtifact);
+router.get("/", apiLimiter, authMiddleware, authorizeRoles("ADMIN"), getArtifacts);
 
-
-router.post("/", authMiddleware,upload.single("file"), createArtifact);
-router.get("/", authMiddleware,authorizeRoles("ADMIN","EDITOR"), getArtifacts);
-export default router;
+module.exports = router;

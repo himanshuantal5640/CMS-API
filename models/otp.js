@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import bcrypt from "bcrypt"
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+
 const otpSchema = new mongoose.Schema(
   {
     email: {
@@ -25,6 +26,7 @@ otpSchema.pre("save", async function (next) {
   const saltRounds = 10;
   this.otp = await bcrypt.hash(this.otp, saltRounds);
 
-  
+  next();
 });
-export default mongoose.model("OTP", otpSchema);
+
+module.exports = mongoose.model("OTP", otpSchema);

@@ -1,21 +1,17 @@
-import bcrypt from "bcrypt";
-import User from "../models/users.js";
-import OTP from "../models/otp.js";
-import { generateOTP } from "../utils/generateOtp.js";
-import jwt from "jsonwebtoken";
+const bcrypt = require("bcrypt");
+const User = require("../models/users.js");
+const OTP = require("../models/otp.js");
+const { generateOTP } = require("../utils/generateOtp.js");
+const jwt = require("jsonwebtoken");
 
-export const initiateSignupService = async (email) => {
+const initiateSignupService = async (email) => {
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new Error("User already exists");
   }
-
-
   await OTP.deleteMany({ email });
-
   const otp = generateOTP();
-
 
   await OTP.create({
     email,
@@ -29,33 +25,28 @@ export const initiateSignupService = async (email) => {
   };
 };
 
-
-export const verifySignupOtpService = async ({
+const verifySignupOtpService = async ({
   email,
   otp,
   name,
   password,
   role,
 }) => {
-
   const otpRecord = await OTP.findOne({ email });
   if (!otpRecord) {
     throw new Error("OTP expired or not found");
   }
-
 
   if (otpRecord.expiresAt < Date.now()) {
     await OTP.deleteOne({ email });
     throw new Error("OTP expired");
   }
 
-
   const isValidOtp = await bcrypt.compare(otp, otpRecord.otp);
   if (!isValidOtp) {
     throw new Error("Invalid OTP");
   }
 
- 
   const user = await User.create({
     name,
     email,
@@ -63,7 +54,6 @@ export const verifySignupOtpService = async ({
     role,
   });
 
- 
   await OTP.deleteOne({ email });
 
   return {
@@ -73,9 +63,7 @@ export const verifySignupOtpService = async ({
   };
 };
 
-
-
-export const loginService = async (email, password) => {
+const loginService = async (email, password) => {
   const user = await User
     .findOne({ email })
     .select("+password");
@@ -109,3 +97,5 @@ export const loginService = async (email, password) => {
     }
   };
 };
+
+module.exports = { initiateSignupService, verifySignupOtpService, loginService };

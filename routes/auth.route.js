@@ -1,16 +1,18 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   initiateSignup,
   verifySignupOtp,
   login
-} from "../controllers/auth.controller.js";
+} = require("../controllers/auth.controller.js");
+const { apiLimiter } = require("../middlewares/rateLimiter.middleware.js");
 
 const router = express.Router();
 
 
-router.post("/signup/initiate", initiateSignup);
+router.post("/signup/initiate", apiLimiter, initiateSignup);
+
 
 router.post("/signup/verify", verifySignupOtp);
 router.post("/login", login);
 
-export default router;
+module.exports = router;

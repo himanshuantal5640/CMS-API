@@ -1,9 +1,9 @@
-import {
+const {
   addCommentService,
   getCommentsService
-} from "../services/comment.service.js";
+} = require("../services/comment.service.js");
 
-export const addComment = async (req, res) => {
+const addComment = async (req, res) => {
   try {
     const comment = await addCommentService({
       artifactId: req.params.id,
@@ -23,7 +23,7 @@ export const addComment = async (req, res) => {
   }
 };
 
-export const getComments = async (req, res) => {
+const getComments = async (req, res) => {
   const comments = await getCommentsService(req.params.id);
 
   res.status(200).json({
@@ -31,3 +31,5 @@ export const getComments = async (req, res) => {
     comments
   });
 };
+
+module.exports = { addComment, getComments };

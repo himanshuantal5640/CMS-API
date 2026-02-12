@@ -1,11 +1,13 @@
-import { createArtifactService ,getArtifactsService} from "../services/artifact.service.js";
+const rateLimit = require("express-rate-limit");
+const { createArtifactService, getArtifactsService } = require("../services/artifact.service.js");
+const { apiLimiter } = require("../middlewares/rateLimiter.middleware.js");
 
-export const createArtifact = async (req, res) => {
+const createArtifact = async (req, res) => {
   try {
     const artifact = await createArtifactService({
       title: req.body.title,
       content: req.body.content,
-      userId: req.user.id ,// injected by auth middleware
+      userId: req.user.id, // injected by auth middleware
       filePath: req.file?.path
     });
 
@@ -22,11 +24,7 @@ export const createArtifact = async (req, res) => {
   }
 };
 
-
-
-
-
-export const getArtifacts = async (req, res) => {
+const getArtifacts = async (req, res) => {
   try {
     const artifacts = await getArtifactsService({
       userId: req.user.id,
@@ -44,3 +42,5 @@ export const getArtifacts = async (req, res) => {
     });
   }
 };
+
+module.exports = { createArtifact, getArtifacts };

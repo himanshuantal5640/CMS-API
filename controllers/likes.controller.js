@@ -1,9 +1,9 @@
-import {
+const {
   toggleLikeService,
   getLikeCountService
-} from "../services/likes.service.js";
+} = require("../services/likes.service.js");
 
-export const toggleLike = async (req, res) => {
+const toggleLike = async (req, res) => {
   try {
     const result = await toggleLikeService({
       artifactId: req.params.id,
@@ -22,7 +22,7 @@ export const toggleLike = async (req, res) => {
   }
 };
 
-export const getLikeCount = async (req, res) => {
+const getLikeCount = async (req, res) => {
   const count = await getLikeCountService(req.params.id);
 
   res.status(200).json({
@@ -30,3 +30,5 @@ export const getLikeCount = async (req, res) => {
     likes: count
   });
 };
+
+module.exports = { toggleLike, getLikeCount };

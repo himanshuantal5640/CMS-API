@@ -1,11 +1,11 @@
-import {
+const {
   initiateSignupService,
   verifySignupOtpService,
   loginService
-} from "../services/auth.service.js";
+} = require("../services/auth.service.js");
 
 
-export const initiateSignup = async (req, res) => {
+const initiateSignup = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -32,10 +32,9 @@ export const initiateSignup = async (req, res) => {
 };
 
 
-
-export const verifySignupOtp = async (req, res) => {
+const verifySignupOtp = async (req, res) => {
   try {
-    const { email, otp, name, password,role } = req.body;
+    const { email, otp, name, password, role } = req.body;
 
     if (!email || !otp || !name || !password) {
       return res.status(400).json({
@@ -65,11 +64,7 @@ export const verifySignupOtp = async (req, res) => {
   }
 };
 
-
-
-
-
-export const login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -95,3 +90,4 @@ export const login = async (req, res) => {
   }
 };
 
+module.exports = { initiateSignup, verifySignupOtp, login };

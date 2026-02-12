@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const artifactSchema = new mongoose.Schema(
   {
@@ -20,11 +20,11 @@ const artifactSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
-    media:{
-      type: String,  
+    media: {
+      type: String 
     }
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Artifact", artifactSchema);
+module.exports = mongoose.model("Artifact", artifactSchema);

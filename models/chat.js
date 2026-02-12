@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const chatSchema = new mongoose.Schema(
   {
@@ -7,18 +7,25 @@ const chatSchema = new mongoose.Schema(
       ref: "Thread",
       required: true
     },
+
     sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
     },
+
     message: {
       type: String,
       required: true,
       trim: true
+    },
+
+    isRead: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Chat", chatSchema);
+module.exports = mongoose.model("Chat", chatSchema);

@@ -1,22 +1,24 @@
 import mongoose from "mongoose";
 
-const likeSchema = new mongoose.Schema(
+const chatSchema = new mongoose.Schema(
   {
-    artifact: {
+    thread: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Artifact",
+      ref: "Thread",
       required: true
     },
-    user: {
+    sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
+    },
+    message: {
+      type: String,
+      required: true,
+      trim: true
     }
   },
   { timestamps: true }
 );
 
-
-likeSchema.index({ artifact: 1, user: 1 }, { unique: true });
-
-export default mongoose.model("Like", likeSchema);
+export default mongoose.model("Chat", chatSchema);
